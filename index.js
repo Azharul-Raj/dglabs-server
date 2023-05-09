@@ -57,6 +57,32 @@ app.get("/get_user/:email", async (req, res) => {
     });
   }
 });
+
+//put request
+app.put("/update_info/:email",async(req,res)=>{
+  const {email}=req.params;
+  const {url,btnTitle}=req.body;
+  try {
+    const filter={email};
+    const updatedDoc={
+      $set:{
+        logo:url,
+        btnTitle
+      }
+    }
+    const updatedUser=await users.findOneAndUpdate(filter,updatedDoc,{upsert:true});
+    res.status(200).json({
+      status: "success",
+      data: updatedUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+})
 ///get users
 app.get("/users", async (req, res) => {
   try {
